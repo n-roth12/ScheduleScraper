@@ -11,13 +11,14 @@ app = Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = config.app_secret_key
 app.config['BASE_URL'] = config.base_url
+app.config['API_URL'] = config.api_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 scheduler = APScheduler()
 scheduler.api_enabled = True
 scheduler.init_app(app)
 
-@scheduler.task('interval', id='scrape_upcoming_games', seconds=86400)
+@scheduler.task('interval', id='scrape_upcoming_games', seconds=8)
 def scrape_upcoming_games():
     week = 1
     year = 2022
@@ -59,7 +60,7 @@ def scrape_upcoming_games():
     				'week': week
     			}
     		)
-    print(result)
+    requests.post(app.config['API_URL'], {'games': result})
 	
 if __name__ == '__main__':
 	scheduler.start()
