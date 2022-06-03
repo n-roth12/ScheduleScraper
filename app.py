@@ -18,7 +18,7 @@ scheduler = APScheduler()
 scheduler.api_enabled = True
 scheduler.init_app(app)
 
-@scheduler.task('interval', id='scrape_upcoming_games', seconds=8)
+@scheduler.task('interval', id='scrape_upcoming_games', seconds=86400)
 def scrape_upcoming_games():
     week = 1
     year = 2022
