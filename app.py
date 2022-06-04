@@ -18,7 +18,7 @@ scheduler = APScheduler()
 scheduler.api_enabled = True
 scheduler.init_app(app)
 
-@scheduler.task('interval', id='scrape_upcoming_games', seconds=86400)
+@scheduler.task('interval', id='scrape_upcoming_games', seconds=10)
 def scrape_upcoming_games():
     week = 1
     year = 2022
@@ -60,11 +60,12 @@ def scrape_upcoming_games():
     				'week': week
     			}
     		)
-    requests.post(app.config['API_URL'], {'games': result})
+    headers = {'Content-Type': 'application/json'}
+    requests.post(app.config['API_URL'], data=json.dumps({'games': result}), headers=headers)
 	
 if __name__ == '__main__':
 	scheduler.start()
-	app.run(host='127.0.0.1', port=8000, use_reloader=False)
+	app.run(host='127.0.0.1', port=5000, use_reloader=False)
 	app.run()
 
 
